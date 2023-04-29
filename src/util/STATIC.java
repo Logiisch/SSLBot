@@ -1,5 +1,10 @@
 package util;
 
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class STATIC {
@@ -25,13 +30,13 @@ public class STATIC {
 
 
     public static String formatXp(int xp) {
-        return String.format("%,d",xp);
+        return String.format("%,d", xp);
     }
 
     public static String formatLeaderboard(List<LeaderboardEntry> lb) {
         StringBuilder sb = new StringBuilder();
         sb.append("Rank, ID, XP").append("\n");
-        for (LeaderboardEntry le:lb) {
+        for (LeaderboardEntry le : lb) {
 
             String playerName = SteamConnector.getName(le.getSteamID());
 
@@ -48,5 +53,34 @@ public class STATIC {
         return sb.toString();
     }
 
+    public static List<MessageEmbed> formatLeaderboardEmbeds(List<LeaderboardEntry> lb) {
+        List<MessageEmbed> out = new ArrayList<>();
+
+        int pos = 1;
+
+        for (LeaderboardEntry le : lb) {
+            if (pos==1) out.add(formatLeaderboardEntry(le,new Color(218,165,32)));
+            if (pos==2) out.add(formatLeaderboardEntry(le,new Color(192,192,192)));
+            if (pos==3) out.add(formatLeaderboardEntry(le,new Color(205,127,50)));
+            if (pos>3) out.add(formatLeaderboardEntry(le));
+            pos++;
+        }
+        return out;
+    }
+
+    public static MessageEmbed formatLeaderboardEntry(LeaderboardEntry le) {
+        return formatLeaderboardEntry(le,Color.green);
+    }
+
+    public static MessageEmbed formatLeaderboardEntry(LeaderboardEntry le, Color color) {
+        String name = SteamConnector.getName(le.getSteamID());
+        EmbedBuilder eb = new EmbedBuilder().setTitle(name, "https://steamcommunity.com/profiles/" + le.getSteamID());
+        eb.setColor(color);
+        eb.addField("Current Rank", formatXp(le.getRank()), true);
+        eb.addField("Current XP", formatXp(le.getXp()), true);
+        String thumb = SteamConnector.getAvatar(le.getSteamID());
+        eb.setThumbnail(thumb);
+        return eb.build();
+    }
 
 }

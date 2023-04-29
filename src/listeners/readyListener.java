@@ -45,5 +45,9 @@ public class readyListener extends ListenerAdapter {
                 .addOption(OptionType.STRING,"steamid","the steam id of the player you want to know the rank of",false)
                 .addOption(OptionType.USER,"player","the player you want to know the rank of",false)
                 .queue();
+        guild
+                .upsertCommand("serverlb","Shows the leaderboard with all users of the server")
+                .setGuildOnly(true)
+                .queue();
     }
 }
