@@ -19,7 +19,7 @@ public class STATIC {
 
 
     public static String formatXp(int xp) {
-        return String.valueOf(xp);
+        return String.format("%,d",xp);
     }
 
 }

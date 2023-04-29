@@ -10,9 +10,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.SimpleTimeZone;
 
 public class SteamConnector {
+
+    private static final HashMap<String,String> nameCache = new HashMap<>();
 
     public static List<LeaderboardEntry> getTopPlayers(int from, int to) throws Exception {
         String url = "https://steamcommunity.com/stats/326460/leaderboards/743177/?xml=1&start=%START%&end=%END%";
@@ -68,6 +72,39 @@ public class SteamConnector {
         }
         return out;
     }
+
+    private static String getNameUC(String steamid) {
+        String url = "https://steamcommunity.com/profiles/%STEAMID%/?xml=1".replace("%STEAMID%",steamid);
+        Document doc;
+        try {
+            doc = parseUrl(url);
+        } catch (ParserConfigurationException | IOException | SAXException e) {
+            e.printStackTrace();
+            return "[ERROR, see log]";
+        }
+        NodeList lst = doc.getElementsByTagName("steamID");
+        if (lst.getLength() !=1) {
+            System.err.println("Error: len(NodeList) is "+lst.getLength());
+            System.out.println(lst);
+            return "[ERROR, see log]";
+        }
+        return lst.item(0).getTextContent();
+
+
+    }
+
+    public static String getName(String steamid, boolean forceRefresh) {
+        if (nameCache.containsKey(steamid) && !forceRefresh) return nameCache.get(steamid);
+        String name = getNameUC(steamid);
+        nameCache.put(steamid,name);
+        return name;
+    }
+
+    public static String getName(String steamid) {
+        return getName(steamid,false);
+    }
+
+
 
 
 }

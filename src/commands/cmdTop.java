@@ -17,6 +17,8 @@ public class cmdTop extends ListenerAdapter {
         SlashCommandInteraction sce = event.getInteraction();
         if (!sce.getName().equalsIgnoreCase("top")) return;
 
+        event.deferReply().queue();
+
         List<LeaderboardEntry> lb;
 
 
@@ -30,18 +32,21 @@ public class cmdTop extends ListenerAdapter {
         StringBuilder sb = new StringBuilder();
         sb.append("Rank, ID, XP").append("\n");
         for (LeaderboardEntry le:lb) {
+
+            String playerName = SteamConnector.getName(le.getSteamID());
+
             sb
                     .append("**")
                     .append(le.getRank())
                     .append("** __")
-                    .append(le.getSteamID())
+                    .append(playerName)
                     .append("__ ")
                     .append(STATIC.formatXp(le.getXp()))
                     .append("xp")
                     .append("\n");
         }
 
-        event.reply(sb.toString()).queue();
+        event.getHook().sendMessage(sb.toString()).queue();
 
 
     }
