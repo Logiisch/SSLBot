@@ -18,8 +18,8 @@ public class STATIC {
 
     public static final String TESTSERVER_ID = "1099994702264156242";
     public static final String INVITE_LINK = "https://discord.com/oauth2/authorize?client_id=1101778469815336960&scope=bot&permissions=380104723520";
-
     public static final int MAX_REQUEST_SIZE = 30;
+    public static final String GITHUB_LINK = "https://github.com/Logiisch/SSLBot";
 
 
     public static String formatXp(int xp) {

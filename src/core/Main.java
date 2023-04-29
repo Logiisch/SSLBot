@@ -1,6 +1,8 @@
 package core;
 
 
+import commands.cmdGithub;
+import commands.cmdInvite;
 import commands.cmdTop;
 import listeners.readyListener;
 import net.dv8tion.jda.api.JDA;
@@ -43,6 +45,8 @@ public class Main {
 
         //Commands
         builder.addEventListeners(new cmdTop());
+        builder.addEventListeners(new cmdInvite());
+        builder.addEventListeners(new cmdGithub());
 
     }
 

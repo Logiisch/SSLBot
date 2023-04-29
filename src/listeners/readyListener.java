@@ -24,5 +24,12 @@ public class readyListener extends ListenerAdapter {
                 .upsertCommand("top","Show the top players in the leaderboard")
                 .addOption(OptionType.STRING,"range","the range you want to see, e.g. \"10-20\"",false)
                 .queue();
+
+        guild
+                .upsertCommand("invite","Sends you the invite link of the bot")
+                .queue();
+        guild
+                .upsertCommand("github","Get the Github link, where you can find the code of the bot")
+                .queue();
     }
 }
