@@ -34,15 +34,9 @@ public class cmdLink extends ListenerAdapter {
         }
 
         String steamid = steamIDom.getAsString().trim();
-        if (steamid.length()!=17) {
+        if (!SteamConnector.isValidSteamID(steamid)) {
             sce.reply("Error: Your steam ID should have exactly 17 digits. Please check the provided id!\nIf you need help, please run `/link`!").setEphemeral(true).queue();
             return;
-        }
-        for (char c:steamid.toCharArray()) {
-            if (!Character.isDigit(c)) {
-                sce.reply("Error: Your steam ID should have exactly 17 digits. Please check the provided id!\nIf you need help, please run `/link`!").setEphemeral(true).queue();
-                return;
-            }
         }
         String description;
 

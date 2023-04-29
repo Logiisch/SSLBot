@@ -40,5 +40,10 @@ public class readyListener extends ListenerAdapter {
         guild
                 .upsertCommand("unlink","Unlink your Steam and Discord Account")
                 .queue();
+        guild
+                .upsertCommand("rank","Shows the XP and rank from you or another player")
+                .addOption(OptionType.STRING,"steamid","the steam id of the player you want to know the rank of",false)
+                .addOption(OptionType.USER,"player","the player you want to know the rank of",false)
+                .queue();
     }
 }

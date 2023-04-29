@@ -28,11 +28,36 @@ public class SteamConnector {
         try {
             doc = parseUrl(url);
         } catch (ParserConfigurationException | IOException | SAXException e) {
+            e.printStackTrace();
             throw new Exception("Cannot parse leaderboard. Please check the variables!");
         }
         return parseDocument(doc);
+    }
+
+    public static List<LeaderboardEntry> getFriendListOfPlayer(String steamID) throws Exception {
+        String url = "https://steamcommunity.com/stats/326460/leaderboards/743177/?xml=1&steamid=" + steamID;
+        Document doc;
+        try {
+            doc = parseUrl(url);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("Cannot parse leaderboard. Please check the variables!");
+        }
+        return parseDocument(doc);
+    }
 
 
+    public static boolean isValidSteamID(String steamID) {
+        if (steamID.length()!=17) {
+            return false;
+        }
+        for (char c:steamID.toCharArray()) {
+            if (!Character.isDigit(c)) {
+
+                return false;
+            }
+        }
+        return true;
     }
 
 
