@@ -9,11 +9,17 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SteamConnector {
 
     private static final Map<String,String> nameCache = new HashMap<>();
+
+    //<DiscordID,SteamID>
+    private static final Map<String,String> linkedAccounts = new HashMap<>();
 
     public static List<LeaderboardEntry> getTopPlayers(int from, int to) throws Exception {
         String url = "https://steamcommunity.com/stats/326460/leaderboards/743177/?xml=1&start=%START%&end=%END%";
@@ -89,6 +95,22 @@ public class SteamConnector {
 
 
     }
+    public static String getDescription(String steamid) throws Exception {
+        String url = "https://steamcommunity.com/profiles/%STEAMID%/?xml=1".replace("%STEAMID%",steamid);
+        Document doc;
+        try {
+            doc = parseUrl(url);
+        } catch (ParserConfigurationException | IOException | SAXException e) {
+            e.printStackTrace();
+            throw new Exception("Cannot parse provided URL!");
+        }
+        NodeList lst = doc.getElementsByTagName("summary");
+        if (lst.getLength() <1) {
+            throw new Exception("Error: len(NodeList) is \"+lst.getLength()");
+        }
+        return lst.item(0).getTextContent();
+    }
+
 
     public static String getName(String steamid, boolean forceRefresh) {
         if (nameCache.containsKey(steamid) && !forceRefresh) return nameCache.get(steamid);
@@ -99,6 +121,54 @@ public class SteamConnector {
 
     public static String getName(String steamid) {
         return getName(steamid,false);
+    }
+
+    public static void addLinking(String discordID, String steamID) {
+        linkedAccounts.put(discordID,steamID);
+        saveLinks();
+    }
+
+    public static String getSteamID(String discordID){
+        return linkedAccounts.getOrDefault(discordID,"");
+    }
+    public static String getDiscordID(String steamID) {
+        for (String discordID:linkedAccounts.keySet()) {
+            if (linkedAccounts.get(discordID).equalsIgnoreCase(steamID)) return discordID;
+        }
+        return "";
+    }
+
+    public static void unlink(String discordID) {
+        linkedAccounts.remove(discordID);
+        saveLinks();
+    }
+
+
+    private static void saveLinks() {
+        List<String> out = new ArrayList<>();
+        for(String discordID:linkedAccounts.keySet()) {
+            String line = discordID+":"+linkedAccounts.get(discordID);
+            out.add(line);
+        }
+        try {
+            printOutTxtFile.write("linkedAccounts.txt",out);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void loadLinks() {
+        try {
+            List<String> in = readInTxtFile.read("linkedAccounts.txt");
+
+            for (String line:in) {
+                String[] split = line.split(":");
+                linkedAccounts.put(split[0],split[1]);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

@@ -6,12 +6,14 @@ import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import util.STATIC;
+import util.SteamConnector;
 
 public class readyListener extends ListenerAdapter {
 
     @Override
     public void onReady(ReadyEvent event) {
         registerCommands(event.getJDA());
+        SteamConnector.loadLinks();
     }
 
     private void registerCommands(JDA jda) {
@@ -30,6 +32,13 @@ public class readyListener extends ListenerAdapter {
                 .queue();
         guild
                 .upsertCommand("github","Get the Github link, where you can find the code of the bot")
+                .queue();
+        guild
+                .upsertCommand("link","Link your discord account to your Steam Account")
+                .addOption(OptionType.STRING,"steamid","your Steam ID",false)
+                .queue();
+        guild
+                .upsertCommand("unlink","Unlink your Steam and Discord Account")
                 .queue();
     }
 }

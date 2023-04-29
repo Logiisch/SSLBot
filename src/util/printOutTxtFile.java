@@ -1,13 +1,13 @@
 package util;
 
 import java.io.BufferedWriter;
-import java.io.File;
+import java.util.List;
 
 public class printOutTxtFile
 {
   public printOutTxtFile() {}
   
-  public static void write(String dest, java.util.ArrayList<String> content) throws java.io.IOException {
+  public static void write(String dest, List<String> content) throws java.io.IOException {
     //File f = new File(dest);
 
     java.io.FileWriter fw = new java.io.FileWriter(dest);

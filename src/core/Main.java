@@ -1,11 +1,8 @@
 package core;
 
 
-import commands.cmdGithub;
-import commands.cmdInvite;
-import commands.cmdTop;
+import commands.*;
 import listeners.readyListener;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -32,8 +29,8 @@ public class Main {
         //readInStartValues();
 
         try {
-            JDA jda = builder.build();
-            startThreads(jda);
+            builder.build();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -47,10 +44,10 @@ public class Main {
         builder.addEventListeners(new cmdTop());
         builder.addEventListeners(new cmdInvite());
         builder.addEventListeners(new cmdGithub());
+        builder.addEventListeners(new cmdLink());
+        builder.addEventListeners(new cmdUnlink());
 
     }
 
-    private static void startThreads(JDA jda) {
 
-    }
 }
