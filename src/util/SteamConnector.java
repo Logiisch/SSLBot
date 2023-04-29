@@ -9,14 +9,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.SimpleTimeZone;
+import java.util.*;
 
 public class SteamConnector {
 
-    private static final HashMap<String,String> nameCache = new HashMap<>();
+    private static final Map<String,String> nameCache = new HashMap<>();
 
     public static List<LeaderboardEntry> getTopPlayers(int from, int to) throws Exception {
         String url = "https://steamcommunity.com/stats/326460/leaderboards/743177/?xml=1&start=%START%&end=%END%";

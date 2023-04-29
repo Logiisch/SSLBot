@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import util.STATIC;
 
 public class readyListener extends ListenerAdapter {
@@ -21,6 +22,7 @@ public class readyListener extends ListenerAdapter {
         }
         guild
                 .upsertCommand("top","Show the top players in the leaderboard")
+                .addOption(OptionType.STRING,"range","the range you want to see, e.g. \"10-20\"",false)
                 .queue();
     }
 }
