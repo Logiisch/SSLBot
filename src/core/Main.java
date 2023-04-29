@@ -1,6 +1,8 @@
 package core;
 
 
+import commands.cmdTop;
+import listeners.readyListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -22,7 +24,7 @@ public class Main {
         String Version = "v 1.0";
 
 
-        builder.setActivity(Activity.listening("Shell Shock Live"));
+        builder.setActivity(Activity.playing("Shell Shock Live"));
         System.out.println("Starte auf " + Version + " ...");
         addListeners();
         //readInStartValues();
@@ -35,6 +37,12 @@ public class Main {
         }
     }
     private static void addListeners() {
+        //Listeners
+        builder.addEventListeners(new readyListener());
+
+
+        //Commands
+        builder.addEventListeners(new cmdTop());
 
     }
 
