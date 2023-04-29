@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class SteamConnector {
 
-    private static final Map<String,String> nameCache = new HashMap<>();
+    private static final Map<String,SteamProfile> profileCache = new HashMap<>();
 
     //<DiscordID,SteamID>
     private static final Map<String,String> linkedAccounts = new HashMap<>();
@@ -101,24 +101,42 @@ public class SteamConnector {
         return out;
     }
 
-    private static String getNameUC(String steamid) {
+    private static SteamProfile getProfileUC(String steamid) throws Exception{
         String url = "https://steamcommunity.com/profiles/%STEAMID%/?xml=1".replace("%STEAMID%",steamid);
         Document doc;
-        try {
-            doc = parseUrl(url);
-        } catch (ParserConfigurationException | IOException | SAXException e) {
-            e.printStackTrace();
-            return "[ERROR, see log]";
+        doc = parseUrl(url);
+        NodeList lstName = doc.getElementsByTagName("steamID");
+        if (lstName.getLength() !=1) {
+            System.err.println("Error: len(NameList) is "+lstName.getLength());
+            System.out.println(lstName);
+            throw new Exception("Profile is probably private!");
         }
-        NodeList lst = doc.getElementsByTagName("steamID");
-        if (lst.getLength() !=1) {
-            System.err.println("Error: len(NodeList) is "+lst.getLength());
-            System.out.println(lst);
-            return "[ERROR, see log]";
+        String username = lstName.item(0).getTextContent();
+        NodeList lstAvatar = doc.getElementsByTagName("avatarIcon");
+        if (lstAvatar.getLength() <1) {
+            System.err.println("Error: len(AvatarList) is "+lstAvatar.getLength());
+            System.out.println(lstName);
+            throw new Exception("Profile is probably private!");
         }
-        return lst.item(0).getTextContent();
-
-
+        String avatar = lstAvatar.item(0).getTextContent();
+        NodeList lstMPG = doc.getElementsByTagName("mostPlayedGame");
+        int hoursSSL = -1;
+        for (int i=0;i<lstMPG.getLength();i++) {
+            Node mpg = lstMPG.item(i);
+            NodeList childs = mpg.getChildNodes();
+            boolean isSSL = false;
+            for (int j=0;j<childs.getLength();j++) {
+                Node child = childs.item(j);
+                if (child.getTextContent().equalsIgnoreCase("ShellShock Live")) isSSL = true;
+            }
+            if (isSSL) {
+                for (int j=0;j<childs.getLength();j++) {
+                    Node child = childs.item(j);
+                    if (child.getNodeName().equalsIgnoreCase("hoursOnRecord")) hoursSSL = Integer.parseInt(child.getTextContent().strip().replaceAll(",",""));
+                }
+            }
+        }
+        return new SteamProfile(username,avatar,hoursSSL);
     }
     public static String getDescription(String steamid) throws Exception {
         String url = "https://steamcommunity.com/profiles/%STEAMID%/?xml=1".replace("%STEAMID%",steamid);
@@ -138,14 +156,69 @@ public class SteamConnector {
 
 
     public static String getName(String steamid, boolean forceRefresh) {
-        if (nameCache.containsKey(steamid) && !forceRefresh) return nameCache.get(steamid);
-        String name = getNameUC(steamid);
-        nameCache.put(steamid,name);
-        return name;
+        checkExpired(steamid);
+        if (profileCache.containsKey(steamid) && !forceRefresh) return profileCache.get(steamid).getUsername();
+        SteamProfile sp;
+        try {
+            sp = getProfileUC(steamid);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "[ERROR: See console]";
+        }
+        profileCache.put(steamid,sp);
+        return sp.getUsername();
     }
 
     public static String getName(String steamid) {
         return getName(steamid,false);
+    }
+
+    public static int getHours(String steamid){
+        return getHours(steamid,false);
+    }
+
+    public static int getHours(String steamid, boolean forceRefresh) {
+        checkExpired(steamid);
+        if (profileCache.containsKey(steamid) && !forceRefresh) return profileCache.get(steamid).getHoursSSL();
+        SteamProfile sp;
+        try {
+            sp = getProfileUC(steamid);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+        profileCache.put(steamid,sp);
+        return sp.getHoursSSL();
+    }
+
+    public static String getAvatar(String steamid){
+        return getAvatar(steamid,false);
+    }
+
+    public static String getAvatar(String steamid, boolean forceRefresh) {
+        checkExpired(steamid);
+        if (profileCache.containsKey(steamid) && !forceRefresh) return profileCache.get(steamid).getAvatarIcon();
+        SteamProfile sp;
+        try {
+            sp = getProfileUC(steamid);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+        profileCache.put(steamid,sp);
+        return sp.getAvatarIcon();
+    }
+
+    private static void checkExpired(String steamID) {
+        if (!profileCache.containsKey(steamID)) return;
+        if (!profileCache.get(steamID).isExpired()) return;
+        try {
+            SteamProfile sp = getProfileUC(steamID);
+            profileCache.put(steamID,sp);
+        } catch (Exception e) {
+            profileCache.remove(steamID);
+        }
+
     }
 
     public static void addLinking(String discordID, String steamID) {
