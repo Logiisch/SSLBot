@@ -21,6 +21,8 @@ public class STATIC {
     public static final int MAX_REQUEST_SIZE = 30;
     public static final String GITHUB_LINK = "https://github.com/Logiisch/SSLBot";
 
+    public static final int CACHE_EXPIRE_AFTER = 60; //mins
+
 
     public static String formatXp(int xp) {
         return String.format("%,d",xp);
