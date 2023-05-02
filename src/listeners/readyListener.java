@@ -49,5 +49,8 @@ public class readyListener extends ListenerAdapter {
                 .upsertCommand("serverlb","Shows the leaderboard with all users of the server")
                 .setGuildOnly(true)
                 .queue();
+        guild
+                .upsertCommand("surrounding","Show what players are directly in front or behind you on the leaderboard")
+                .queue();
     }
 }

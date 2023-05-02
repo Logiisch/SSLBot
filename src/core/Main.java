@@ -48,6 +48,7 @@ public class Main {
         builder.addEventListeners(new cmdUnlink());
         builder.addEventListeners(new cmdRank());
         builder.addEventListeners(new cmdServerLb());
+        builder.addEventListeners(new cmdSurrounding());
 
     }
 

@@ -58,6 +58,14 @@ public class STATIC {
         return formatLeaderboardEmbeds(lb,false);
     }
 
+    public static List<MessageEmbed> formatLeaderboardEmbeds(List<LeaderboardEntry> lb, String markSteamID, Color markWith) {
+        List<MessageEmbed> out = new ArrayList<>();
+        for (LeaderboardEntry le:lb) {
+            if (le.getSteamID().equalsIgnoreCase(markSteamID)) out.add(formatLeaderboardEntry(le,markWith)); else out.add(formatLeaderboardEntry(le));
+        }
+        return out;
+    }
+
     public static List<MessageEmbed> formatLeaderboardEmbeds(List<LeaderboardEntry> lb,boolean useColor) {
         List<MessageEmbed> out = new ArrayList<>();
 
