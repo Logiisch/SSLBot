@@ -1,5 +1,6 @@
 package commands;
 
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -8,6 +9,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.jetbrains.annotations.NotNull;
+import util.InteractionManager;
 import util.LeaderboardEntry;
 import util.STATIC;
 import util.SteamConnector;
@@ -70,8 +72,19 @@ public class cmdTop extends ListenerAdapter {
         String btnName = event.getButton().getId();
         assert btnName!=null;
         if (!btnName.startsWith("top")) return;
+
+        Message msg = event.getMessage();
+
+        if (InteractionManager.hasMessage(msg.getId())) {
+            if (!InteractionManager.getMessageOwner(msg.getId()).equalsIgnoreCase(event.getUser().getId())) {
+                event.reply("Error: You dont have Permission to do that!").setEphemeral(true).queue();
+                return;
+            }
+        }
+
         if (btnName.equalsIgnoreCase("top-close")) {
             event.getMessage().delete().queue();
+            InteractionManager.removeMessage(msg.getId());
             return;
         }
         int page = Integer.parseInt(btnName.replace("top-p",""));

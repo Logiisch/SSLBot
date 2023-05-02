@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.jetbrains.annotations.NotNull;
+import util.InteractionManager;
 import util.LeaderboardEntry;
 import util.STATIC;
 import util.SteamConnector;
@@ -64,9 +65,10 @@ public class cmdServerLb extends ListenerAdapter {
         }
         entries = sortLeaderboard(entries);
         if (entries.size()<11) {
-            event.getHook().sendMessageEmbeds(STATIC.formatLeaderboardEmbeds(entries,true)).addActionRow(
+            String msgID = event.getHook().sendMessageEmbeds(STATIC.formatLeaderboardEmbeds(entries,true)).addActionRow(
                     Button.secondary("serverlb-reload",Emoji.fromUnicode("U+1F504")),
-                    Button.secondary("serverlb-close",Emoji.fromUnicode("U+274C"))).queue();
+                    Button.secondary("serverlb-close",Emoji.fromUnicode("U+274C"))).complete().getId();
+            InteractionManager.addMessage(msgID,event.getUser().getId());
             return;
         }
         List<LeaderboardEntry> sublist = entries.subList(0,10);
@@ -77,6 +79,7 @@ public class cmdServerLb extends ListenerAdapter {
                 Button.secondary("serverlb-close",Emoji.fromUnicode("U+274C"))
         ).complete().getId();
         sentMessages.put(msgID,entries);
+        InteractionManager.addMessage(msgID,event.getUser().getId());
 
     }
 
@@ -110,8 +113,17 @@ public class cmdServerLb extends ListenerAdapter {
         assert btnName!=null;
         if (!btnName.startsWith("serverlb")) return;
         Message msg = event.getMessage();
+
+        if (InteractionManager.hasMessage(msg.getId())) {
+            if (!InteractionManager.getMessageOwner(msg.getId()).equalsIgnoreCase(event.getUser().getId())) {
+                event.reply("Error: You dont have Permission to do that!").setEphemeral(true).queue();
+                return;
+            }
+        }
+
         if (btnName.equalsIgnoreCase("serverlb-close")) {
             sentMessages.remove(msg.getId());
+            InteractionManager.removeMessage(msg.getId());
             msg.delete().queue();
             return;
         }
