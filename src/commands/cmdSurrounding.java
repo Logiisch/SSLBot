@@ -19,7 +19,7 @@ public class cmdSurrounding extends ListenerAdapter {
 
         String steamID = SteamConnector.getSteamID(event.getUser().getId());
         if (steamID.length()==0) {
-            event.reply("Error: Your account isn't linked. Plese use `/link`!").setEphemeral(true).queue();
+            event.replyEmbeds(DiscordFormatter.error("Your account isn't linked. Plese use `/link`!")).setEphemeral(true).queue();
             return;
         }
 
@@ -29,7 +29,7 @@ public class cmdSurrounding extends ListenerAdapter {
         try {
             friendsLB = SteamConnector.getFriendListOfPlayer(steamID);
         } catch (Exception e) {
-            event.getHook().sendMessage("Error: There was a problem handling your Request. Please see the console.").setEphemeral(true).queue();
+            event.getHook().sendMessageEmbeds(DiscordFormatter.error("Error: There was a problem handling your Request. Please see the console.")).setEphemeral(true).queue();
             e.printStackTrace();
             return;
         }
@@ -39,7 +39,7 @@ public class cmdSurrounding extends ListenerAdapter {
             if (le.getSteamID().equalsIgnoreCase(steamID)) rank = le.getRank();
         }
         if (rank<1) {
-            event.getHook().sendMessage("Error: There was a problem handling your Request. Please see the console.").setEphemeral(true).queue();
+            event.getHook().sendMessageEmbeds(DiscordFormatter.error("Error: There was a problem handling your Request. Please see the console.")).setEphemeral(true).queue();
             System.err.println("Error: Couldn't find the users rank in his own friend list. SteamID: "+steamID);
             return;
         }
@@ -49,7 +49,7 @@ public class cmdSurrounding extends ListenerAdapter {
         try {
             globalList = SteamConnector.getTopPlayers(from,to);
         } catch (Exception e) {
-            event.getHook().sendMessage("Error: There was a problem handling your Request. Please see the console.").setEphemeral(true).queue();
+            event.getHook().sendMessageEmbeds(DiscordFormatter.error("Error: There was a problem handling your Request. Please see the console.")).setEphemeral(true).queue();
             e.printStackTrace();
             return;
         }

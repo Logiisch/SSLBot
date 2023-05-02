@@ -29,7 +29,7 @@ public class cmdTop extends ListenerAdapter {
             int pageNum = om.getAsInt();
 
             if (pageNum<1) {
-                event.reply("Error: Page number cant be smaller than 1!").setEphemeral(true).queue();
+                event.replyEmbeds(DiscordFormatter.error("Page number cant be smaller than 1!")).setEphemeral(true).queue();
                 return;
             }
             page = pageNum;
@@ -48,7 +48,7 @@ public class cmdTop extends ListenerAdapter {
         try {
            lb = new ArrayList<>(SteamConnector.getTopPlayers(from, to));
         } catch (Exception e) {
-            event.reply("During execution, an error occured. Please check logs!").queue();
+            event.getHook().sendMessageEmbeds(DiscordFormatter.error("During execution, an error occured. Please check logs!")).queue();
             e.printStackTrace();
             return;
         }
@@ -74,7 +74,7 @@ public class cmdTop extends ListenerAdapter {
 
         if (InteractionManager.hasMessage(msg.getId())) {
             if (!InteractionManager.getMessageOwner(msg.getId()).equalsIgnoreCase(event.getUser().getId())) {
-                event.reply("Error: You dont have Permission to do that!").setEphemeral(true).queue();
+                event.replyEmbeds(DiscordFormatter.error("You dont have Permission to do that!")).setEphemeral(true).queue();
                 return;
             }
         }
@@ -97,7 +97,7 @@ public class cmdTop extends ListenerAdapter {
         try {
             lb = new ArrayList<>(SteamConnector.getTopPlayers(from, to));
         } catch (Exception e) {
-            event.reply("During execution, an error occurred. Please check logs!").queue();
+            event.getHook().sendMessageEmbeds(DiscordFormatter.error("During execution, an error occurred. Please check logs!")).queue();
             e.printStackTrace();
             return;
         }

@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
+import util.DiscordFormatter;
 import util.SteamConnector;
 
 public class cmdLink extends ListenerAdapter {
@@ -17,7 +18,7 @@ public class cmdLink extends ListenerAdapter {
 
         String teststeamid = SteamConnector.getSteamID(event.getUser().getId());
         if (teststeamid.length()>0) {
-            event.reply("Error: Your Account is already linked. If you want to link to a different account, please `/unlink` first!").setEphemeral(true).queue();
+            event.replyEmbeds(DiscordFormatter.error("Your Account is already linked. If you want to link to a different account, please `/unlink` first!")).setEphemeral(true).queue();
             return;
         }
 
@@ -35,7 +36,7 @@ public class cmdLink extends ListenerAdapter {
 
         String steamid = steamIDom.getAsString().trim();
         if (!SteamConnector.isValidSteamID(steamid)) {
-            sce.reply("Error: Your steam ID should have exactly 17 digits. Please check the provided id!\nIf you need help, please run `/link`!").setEphemeral(true).queue();
+            sce.replyEmbeds(DiscordFormatter.error("Your steam ID should have exactly 17 digits. Please check the provided id!\nIf you need help, please run `/link`!")).setEphemeral(true).queue();
             return;
         }
         String description;
@@ -43,13 +44,13 @@ public class cmdLink extends ListenerAdapter {
         try {
             description = SteamConnector.getDescription(steamid);
         } catch (Exception e) {
-            event.reply("Error: Your steam ID is not valid, or your profile is not set to public!\nYou can only link public profiles. After linking, you can switch back to private!").setEphemeral(true).queue();
+            event.replyEmbeds(DiscordFormatter.error("Your steam ID is not valid, or your profile is not set to public!\nYou can only link public profiles. After linking, you can switch back to private!")).setEphemeral(true).queue();
             return;
         }
 
         if (!description.contains(getVerifyCode(event.getUser().getId()))) {
-            event.reply("Error: Your account description doesnt seem to contain the code. Please use the exact code, with brackets:\n"
-                    +"`"+getVerifyCode(event.getUser().getId())+"`").setEphemeral(true).queue();
+            event.replyEmbeds(DiscordFormatter.error("Your account description doesnt seem to contain the code. Please use the exact code, with brackets:\n"
+                    +"`"+getVerifyCode(event.getUser().getId())+"`")).setEphemeral(true).queue();
             return;
         }
 

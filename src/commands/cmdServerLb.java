@@ -28,7 +28,7 @@ public class cmdServerLb extends ListenerAdapter {
 
         Guild guild = sce.getGuild();
         if (guild==null) {
-            event.reply("Error: This Command only works on servers!").setEphemeral(true).queue();
+            event.replyEmbeds(DiscordFormatter.error("This Command only works on servers!")).setEphemeral(true).queue();
             return;
         }
         event.deferReply().queue();
@@ -49,7 +49,7 @@ public class cmdServerLb extends ListenerAdapter {
                 les = SteamConnector.getFriendListOfPlayer(steamID);
             } catch (Exception e) {
                 e.printStackTrace();
-                event.reply("Error: Something went wrong while collecting Data. See console.").setEphemeral(true).queue();
+                event.getHook().sendMessageEmbeds(DiscordFormatter.error("Error: Something went wrong while collecting Data. See console.")).setEphemeral(true).queue();
                 return;
             }
             for (LeaderboardEntry le:les) {
@@ -113,7 +113,7 @@ public class cmdServerLb extends ListenerAdapter {
 
         if (InteractionManager.hasMessage(msg.getId())) {
             if (!InteractionManager.getMessageOwner(msg.getId()).equalsIgnoreCase(event.getUser().getId())) {
-                event.reply("Error: You dont have Permission to do that!").setEphemeral(true).queue();
+                event.replyEmbeds(DiscordFormatter.error("You dont have Permission to do that!")).setEphemeral(true).queue();
                 return;
             }
         }
@@ -145,7 +145,7 @@ public class cmdServerLb extends ListenerAdapter {
                     les = SteamConnector.getFriendListOfPlayer(steamID);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    event.reply("Error: Something went wrong while collecting Data. See console.").setEphemeral(true).queue();
+                    event.getHook().sendMessageEmbeds(DiscordFormatter.error("Error: Something went wrong while collecting Data. See console.")).setEphemeral(true).queue();
                     return;
                 }
                 for (LeaderboardEntry le:les) {

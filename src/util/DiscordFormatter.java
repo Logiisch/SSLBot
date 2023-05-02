@@ -74,4 +74,16 @@ public class DiscordFormatter {
         eb.setThumbnail(thumb);
         return eb.build();
     }
+
+    public static MessageEmbed error(String message) {
+        return error(message,true);
+    }
+    private static MessageEmbed error(String message, boolean useFooter) {
+        EmbedBuilder eb = new EmbedBuilder()
+                .setTitle("Error")
+                .setColor(Color.RED)
+                .setDescription(message);
+        if (useFooter) eb.setFooter("If you think this should work, please create an issue on Github. Use \"/github\".");
+        return eb.build();
+    }
 }

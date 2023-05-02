@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import util.DiscordFormatter;
 import util.SteamConnector;
 
 public class cmdUnlink extends ListenerAdapter {
@@ -15,7 +16,7 @@ public class cmdUnlink extends ListenerAdapter {
 
         String steamid = SteamConnector.getSteamID(event.getUser().getId());
         if (steamid.length()==0) {
-            event.reply("Error: Your account is currently not linked. Please use `/link` to link your accounts!").setEphemeral(true).queue();
+            event.replyEmbeds(DiscordFormatter.error("Your account is currently not linked. Please use `/link` to link your accounts!")).setEphemeral(true).queue();
             return;
         }
         event.reply("Do you really want to unlink yor accounts?").setEphemeral(true).addActionRow(
