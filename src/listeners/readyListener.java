@@ -24,7 +24,7 @@ public class readyListener extends ListenerAdapter {
         }
         guild
                 .upsertCommand("top","Show the top players in the leaderboard")
-                .addOption(OptionType.STRING,"range","the range you want to see, e.g. \"10-20\"",false)
+                .addOption(OptionType.INTEGER,"page","page nbr. you want to see",false)
                 .queue();
 
         guild

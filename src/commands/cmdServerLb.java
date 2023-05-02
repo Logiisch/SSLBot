@@ -56,7 +56,7 @@ public class cmdServerLb extends ListenerAdapter {
 
 
 
-        event.getHook().sendMessageEmbeds(STATIC.formatLeaderboardEmbeds(entries)).queue();
+        event.getHook().sendMessageEmbeds(STATIC.formatLeaderboardEmbeds(entries,true)).queue();
 
     }
 

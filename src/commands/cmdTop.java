@@ -1,10 +1,13 @@
 package commands;
 
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
-import org.apache.commons.collections4.BidiMap;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import org.jetbrains.annotations.NotNull;
 import util.LeaderboardEntry;
 import util.STATIC;
 import util.SteamConnector;
@@ -13,47 +16,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class cmdTop extends ListenerAdapter {
+    private static final int PAGE_SIZE = 10;
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         SlashCommandInteraction sce = event.getInteraction();
         if (!sce.getName().equalsIgnoreCase("top")) return;
 
-        int from = 1;
-        int to = 15;
+        int page = 1;
 
-        OptionMapping om = event.getOption("range");
+        OptionMapping om = event.getOption("page");
         if (om!=null) {
-            String range = om.getAsString().strip();
-            String[] split = range.split("-");
-            if (split.length !=2) {
-                event.reply("Error: Use the range parameter as ´from-to´, for example: `5-10` or `1-30`!").setEphemeral(true).queue();
-                return;
-            }
-            try {
-                from = Integer.parseInt(split[0]);
-                to = Integer.parseInt(split[1]);
-            } catch (Exception e) {
-                event.reply("Error: Use the range parameter as ´from-to´, for example: `5-10` or `1-30`!").setEphemeral(true).queue();
-                return;
-            }
-            if (from>to) {
-                int cache = to;
-                to = from;
-                from = cache;
-            }
-            if (from < 1) {
-                event.reply("Error: No value can be lower than 1!").setEphemeral(true).queue();
-                return;
-            }
+            int pageNum = om.getAsInt();
 
-            int size = to-from+1;
-            if (size>STATIC.MAX_REQUEST_SIZE) {
-                event.reply("Error: Requests are limited to "+STATIC.MAX_REQUEST_SIZE+" placings!").setEphemeral(true).queue();
+            if (pageNum<1) {
+                event.reply("Error: Page number cant be smaller than 1!").setEphemeral(true).queue();
                 return;
             }
+            page = pageNum;
+
 
         }
+
+        int from = (page-1)*PAGE_SIZE+1;
+        int to = page*PAGE_SIZE;
 
         event.deferReply().queue();
 
@@ -68,9 +54,48 @@ public class cmdTop extends ListenerAdapter {
             return;
         }
 
+        Button left = Button.primary("top-p"+(page-1), Emoji.fromUnicode("U+2B05"));
 
-        event.getHook().sendMessage(STATIC.formatLeaderboard(lb)).queue();
 
+        event.getHook().sendMessageEmbeds(page==1?STATIC.formatLeaderboardEmbeds(lb,true):STATIC.formatLeaderboardEmbeds(lb)).addActionRow(
+                (page==1?left.asDisabled():left),Button.primary("top-p"+(page+1), Emoji.fromUnicode("U+27A1")),Button.secondary("top-close",Emoji.fromUnicode("U+274C"))
+        ).queue();
+
+
+
+    }
+
+    @Override
+    public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
+        String btnName = event.getButton().getId();
+        assert btnName!=null;
+        if (!btnName.startsWith("top")) return;
+        if (btnName.equalsIgnoreCase("top-close")) {
+            event.getMessage().delete().queue();
+            return;
+        }
+        int page = Integer.parseInt(btnName.replace("top-p",""));
+
+        int from = (page-1)*PAGE_SIZE+1;
+        int to = page*PAGE_SIZE;
+
+        event.deferEdit().queue();
+
+        List<LeaderboardEntry> lb;
+
+
+        try {
+            lb = new ArrayList<>(SteamConnector.getTopPlayers(from, to));
+        } catch (Exception e) {
+            event.reply("During execution, an error occurred. Please check logs!").queue();
+            e.printStackTrace();
+            return;
+        }
+
+        Button left = Button.primary("top-p"+(page-1), Emoji.fromUnicode("U+2B05"));
+        event.getMessage().editMessageEmbeds(page==1?STATIC.formatLeaderboardEmbeds(lb,true):STATIC.formatLeaderboardEmbeds(lb)).setActionRow(
+                (page==1?left.asDisabled():left),Button.primary("top-p"+(page+1), Emoji.fromUnicode("U+27A1")),Button.secondary("top-close",Emoji.fromUnicode("U+274C"))
+        ).queue();
 
 
     }

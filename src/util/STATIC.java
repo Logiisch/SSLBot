@@ -23,7 +23,6 @@ public class STATIC {
 
     public static final String TESTSERVER_ID = "1099994702264156242";
     public static final String INVITE_LINK = "https://discord.com/oauth2/authorize?client_id=1101778469815336960&scope=bot&permissions=380104723520";
-    public static final int MAX_REQUEST_SIZE = 30;
     public static final String GITHUB_LINK = "https://github.com/Logiisch/SSLBot";
 
     public static final int CACHE_EXPIRE_AFTER = 60; //mins
@@ -33,6 +32,8 @@ public class STATIC {
         return String.format("%,d", xp);
     }
 
+
+    //This function stays here for testing purposes.
     public static String formatLeaderboard(List<LeaderboardEntry> lb) {
         StringBuilder sb = new StringBuilder();
         sb.append("Rank, ID, XP").append("\n");
@@ -54,15 +55,19 @@ public class STATIC {
     }
 
     public static List<MessageEmbed> formatLeaderboardEmbeds(List<LeaderboardEntry> lb) {
+        return formatLeaderboardEmbeds(lb,false);
+    }
+
+    public static List<MessageEmbed> formatLeaderboardEmbeds(List<LeaderboardEntry> lb,boolean useColor) {
         List<MessageEmbed> out = new ArrayList<>();
 
         int pos = 1;
 
         for (LeaderboardEntry le : lb) {
-            if (pos==1) out.add(formatLeaderboardEntry(le,new Color(218,165,32)));
-            if (pos==2) out.add(formatLeaderboardEntry(le,new Color(192,192,192)));
-            if (pos==3) out.add(formatLeaderboardEntry(le,new Color(205,127,50)));
-            if (pos>3) out.add(formatLeaderboardEntry(le));
+            if (pos==1 && useColor) out.add(formatLeaderboardEntry(le,new Color(218,165,32)));
+            if (pos==2 && useColor) out.add(formatLeaderboardEntry(le,new Color(192,192,192)));
+            if (pos==3 && useColor) out.add(formatLeaderboardEntry(le,new Color(205,127,50)));
+            if (pos>3 || !useColor) out.add(formatLeaderboardEntry(le));
             pos++;
         }
         return out;
