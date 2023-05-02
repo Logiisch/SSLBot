@@ -10,10 +10,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.jetbrains.annotations.NotNull;
-import util.InteractionManager;
-import util.LeaderboardEntry;
-import util.STATIC;
-import util.SteamConnector;
+import util.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,14 +62,14 @@ public class cmdServerLb extends ListenerAdapter {
         }
         entries = sortLeaderboard(entries);
         if (entries.size()<11) {
-            String msgID = event.getHook().sendMessageEmbeds(STATIC.formatLeaderboardEmbeds(entries,true)).addActionRow(
+            String msgID = event.getHook().sendMessageEmbeds(DiscordFormatter.formatLeaderboardEmbeds(entries,true)).addActionRow(
                     Button.secondary("serverlb-reload",Emoji.fromUnicode("U+1F504")),
                     Button.secondary("serverlb-close",Emoji.fromUnicode("U+274C"))).complete().getId();
             InteractionManager.addMessage(msgID,event.getUser().getId());
             return;
         }
         List<LeaderboardEntry> sublist = entries.subList(0,10);
-        String msgID = event.getHook().sendMessageEmbeds(STATIC.formatLeaderboardEmbeds(sublist,true)).addActionRow(
+        String msgID = event.getHook().sendMessageEmbeds(DiscordFormatter.formatLeaderboardEmbeds(sublist,true)).addActionRow(
                 Button.primary("serverlb-p0", Emoji.fromUnicode("U+2B05")).asDisabled(),
                 Button.primary("serverlb-p2", Emoji.fromUnicode("U+27A1")),
                 Button.secondary("serverlb-reload",Emoji.fromUnicode("U+1F504")),
@@ -161,13 +158,13 @@ public class cmdServerLb extends ListenerAdapter {
             }
             entries = sortLeaderboard(entries);
             if (entries.size()<11) {
-                event.getMessage().editMessageEmbeds(STATIC.formatLeaderboardEmbeds(entries,true)).setActionRow(
+                event.getMessage().editMessageEmbeds(DiscordFormatter.formatLeaderboardEmbeds(entries,true)).setActionRow(
                         Button.secondary("serverlb-reload",Emoji.fromUnicode("U+1F504")),
                         Button.secondary("serverlb-close",Emoji.fromUnicode("U+274C"))).queue();
                 return;
             }
             List<LeaderboardEntry> sublist = entries.subList(0,10);
-            event.getMessage().editMessageEmbeds(STATIC.formatLeaderboardEmbeds(sublist,true)).setActionRow(
+            event.getMessage().editMessageEmbeds(DiscordFormatter.formatLeaderboardEmbeds(sublist,true)).setActionRow(
                     Button.primary("serverlb-p0", Emoji.fromUnicode("U+2B05")).asDisabled(),
                     Button.primary("serverlb-p2", Emoji.fromUnicode("U+27A1")),
                     Button.secondary("serverlb-reload",Emoji.fromUnicode("U+1F504")),
@@ -184,7 +181,7 @@ public class cmdServerLb extends ListenerAdapter {
             List<LeaderboardEntry> sublist = les.subList(lowerBound,upperBound);
             Button left = Button.primary("serverlb-p"+(pagenum-1), Emoji.fromUnicode("U+2B05"));
             Button right = Button.primary("serverlb-p"+(pagenum+1), Emoji.fromUnicode("U+27A1"));
-            event.getMessage().editMessageEmbeds(STATIC.formatLeaderboardEmbeds(sublist,pagenum==1)).setActionRow(
+            event.getMessage().editMessageEmbeds(DiscordFormatter.formatLeaderboardEmbeds(sublist,pagenum==1)).setActionRow(
                     (pagenum==0?left.asDisabled():left.asEnabled()),
                     (pagenum*10>=les.size()?right.asDisabled():right.asEnabled()),
                     Button.secondary("serverlb-reload",Emoji.fromUnicode("U+1F504")),

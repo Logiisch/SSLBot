@@ -4,8 +4,8 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import org.jetbrains.annotations.NotNull;
+import util.DiscordFormatter;
 import util.LeaderboardEntry;
-import util.STATIC;
 import util.SteamConnector;
 
 import java.awt.*;
@@ -54,7 +54,7 @@ public class cmdSurrounding extends ListenerAdapter {
             return;
         }
 
-        event.getHook().sendMessageEmbeds(STATIC.formatLeaderboardEmbeds(globalList,steamID, Color.RED)).setEphemeral(true).queue();
+        event.getHook().sendMessageEmbeds(DiscordFormatter.formatLeaderboardEmbeds(globalList,steamID, Color.RED)).setEphemeral(true).queue();
 
     }
 }

@@ -5,8 +5,8 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
+import util.DiscordFormatter;
 import util.LeaderboardEntry;
-import util.STATIC;
 import util.SteamConnector;
 
 import java.awt.*;
@@ -62,13 +62,13 @@ public class cmdRank extends ListenerAdapter {
             if (le.getSteamID().equalsIgnoreCase(steamID)) {
                 EmbedBuilder eb = new EmbedBuilder().setColor(le.getRank()<=100?new Color(218,165,32):Color.green);
                 eb.setTitle(name);
-                eb.addField("Current XP", STATIC.formatXp(le.getXp()) +" XP",true);
+                eb.addField("Current XP", DiscordFormatter.formatXp(le.getXp()) +" XP",true);
                 eb.addField("Current Rank", String.valueOf(le.getRank()),true);
                 int hoursSSL = SteamConnector.getHours(steamID);
                 if (hoursSSL>-1) {
-                    eb.addField("Hours played",STATIC.formatXp(hoursSSL)+" h",true);
+                    eb.addField("Hours played",DiscordFormatter.formatXp(hoursSSL)+" h",true);
                     int xpPerH = Math.floorDiv(le.getXp(),hoursSSL);
-                    eb.addField("Average XP/h",STATIC.formatXp(xpPerH)+" XP/h",true);
+                    eb.addField("Average XP/h",DiscordFormatter.formatXp(xpPerH)+" XP/h",true);
                 }
                 String avatar = SteamConnector.getAvatar(steamID);
                 if (!avatar.equalsIgnoreCase("")) {

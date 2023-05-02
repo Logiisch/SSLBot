@@ -9,10 +9,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.jetbrains.annotations.NotNull;
-import util.InteractionManager;
-import util.LeaderboardEntry;
-import util.STATIC;
-import util.SteamConnector;
+import util.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +56,7 @@ public class cmdTop extends ListenerAdapter {
         Button left = Button.primary("top-p"+(page-1), Emoji.fromUnicode("U+2B05"));
 
 
-        event.getHook().sendMessageEmbeds(page==1?STATIC.formatLeaderboardEmbeds(lb,true):STATIC.formatLeaderboardEmbeds(lb)).addActionRow(
+        event.getHook().sendMessageEmbeds(page==1? DiscordFormatter.formatLeaderboardEmbeds(lb,true):DiscordFormatter.formatLeaderboardEmbeds(lb)).addActionRow(
                 (page==1?left.asDisabled():left),Button.primary("top-p"+(page+1), Emoji.fromUnicode("U+27A1")),Button.secondary("top-close",Emoji.fromUnicode("U+274C"))
         ).queue();
 
@@ -106,7 +103,7 @@ public class cmdTop extends ListenerAdapter {
         }
 
         Button left = Button.primary("top-p"+(page-1), Emoji.fromUnicode("U+2B05"));
-        event.getMessage().editMessageEmbeds(page==1?STATIC.formatLeaderboardEmbeds(lb,true):STATIC.formatLeaderboardEmbeds(lb)).setActionRow(
+        event.getMessage().editMessageEmbeds(page==1?DiscordFormatter.formatLeaderboardEmbeds(lb,true):DiscordFormatter.formatLeaderboardEmbeds(lb)).setActionRow(
                 (page==1?left.asDisabled():left),Button.primary("top-p"+(page+1), Emoji.fromUnicode("U+27A1")),Button.secondary("top-close",Emoji.fromUnicode("U+274C"))
         ).queue();
 
