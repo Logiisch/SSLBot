@@ -145,7 +145,7 @@ public class cmdServerLb extends ListenerAdapter {
                     les = SteamConnector.getFriendListOfPlayer(steamID);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    event.getHook().sendMessageEmbeds(DiscordFormatter.error("Error: Something went wrong while collecting Data. See console.")).setEphemeral(true).queue();
+                    event.getHook().sendMessageEmbeds(DiscordFormatter.error("Something went wrong while collecting Data. See console.")).setEphemeral(true).queue();
                     return;
                 }
                 for (LeaderboardEntry le:les) {
@@ -175,15 +175,18 @@ public class cmdServerLb extends ListenerAdapter {
         }
         if (btnName.startsWith("serverlb-p")) {
             int pagenum = Integer.parseInt(btnName.replace("serverlb-p",""));
-            int lowerBound = 10*pagenum;
-            int upperBound = lowerBound+10;
             List<LeaderboardEntry> les = sentMessages.get(event.getMessage().getId());
+            int lowerBound = 10*(pagenum-1);
+            int upperBound = Math.min(lowerBound+10,les.size());
+            //System.out.println("Calling Page "+pagenum+" with Ub="+upperBound+" Lb="+lowerBound+" and lessize="+les.size());
+
             List<LeaderboardEntry> sublist = les.subList(lowerBound,upperBound);
             Button left = Button.primary("serverlb-p"+(pagenum-1), Emoji.fromUnicode("U+2B05"));
             Button right = Button.primary("serverlb-p"+(pagenum+1), Emoji.fromUnicode("U+27A1"));
+            int lastSite = Math.floorDiv(les.size(),10)+(les.size()%10==0?0:1);
             event.getMessage().editMessageEmbeds(DiscordFormatter.formatLeaderboardEmbeds(sublist,pagenum==1)).setActionRow(
-                    (pagenum==0?left.asDisabled():left.asEnabled()),
-                    (pagenum*10>=les.size()?right.asDisabled():right.asEnabled()),
+                    (pagenum==1?left.asDisabled():left.asEnabled()),
+                    (pagenum==lastSite?right.asDisabled():right.asEnabled()),
                     Button.secondary("serverlb-reload",Emoji.fromUnicode("U+1F504")),
                     Button.secondary("serverlb-close",Emoji.fromUnicode("U+274C"))
             ).queue();
