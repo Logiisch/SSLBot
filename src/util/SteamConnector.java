@@ -107,15 +107,16 @@ public class SteamConnector {
         doc = parseUrl(url);
         NodeList lstName = doc.getElementsByTagName("steamID");
         if (lstName.getLength() !=1) {
-            System.err.println("Error: len(NameList) is "+lstName.getLength());
-            System.out.println(lstName);
+            /*System.err.println("Error: len(NameList) is "+lstName.getLength());
+            System.err.println(doc.toString());
+            System.out.println(lstName);*/
             throw new Exception("Profile is probably private!");
         }
         String username = lstName.item(0).getTextContent();
         NodeList lstAvatar = doc.getElementsByTagName("avatarIcon");
         if (lstAvatar.getLength() <1) {
-            System.err.println("Error: len(AvatarList) is "+lstAvatar.getLength());
-            System.out.println(lstName);
+            /*System.err.println("Error: len(AvatarList) is "+lstAvatar.getLength());
+            System.out.println(lstName);*/
             throw new Exception("Profile is probably private!");
         }
         String avatar = lstAvatar.item(0).getTextContent();
@@ -162,8 +163,8 @@ public class SteamConnector {
         try {
             sp = getProfileUC(steamid);
         } catch (Exception e) {
-            e.printStackTrace();
-            return "[ERROR: See console]";
+            //e.printStackTrace();
+            return "[Private Profile]";
         }
         profileCache.put(steamid,sp);
         return sp.getUsername();
@@ -184,7 +185,7 @@ public class SteamConnector {
         try {
             sp = getProfileUC(steamid);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return -1;
         }
         profileCache.put(steamid,sp);
@@ -202,7 +203,7 @@ public class SteamConnector {
         try {
             sp = getProfileUC(steamid);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return "";
         }
         profileCache.put(steamid,sp);

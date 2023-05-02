@@ -63,7 +63,7 @@ public class cmdRank extends ListenerAdapter {
                 EmbedBuilder eb = new EmbedBuilder().setColor(le.getRank()<=100?new Color(218,165,32):Color.green);
                 eb.setTitle(name);
                 eb.addField("Current XP", DiscordFormatter.formatXp(le.getXp()) +" XP",true);
-                eb.addField("Current Rank", String.valueOf(le.getRank()),true);
+                eb.addField("Current Rank", DiscordFormatter.formatXp(le.getRank()),true);
                 int hoursSSL = SteamConnector.getHours(steamID);
                 if (hoursSSL>-1) {
                     eb.addField("Hours played",DiscordFormatter.formatXp(hoursSSL)+" h",true);
@@ -78,7 +78,7 @@ public class cmdRank extends ListenerAdapter {
                 return;
             }
         }
-        event.replyEmbeds(DiscordFormatter.error("Error: Couldn't find "+name+" in the leaderboard. Does he play Shell Shock Live at all?")).queue();
+        event.replyEmbeds(DiscordFormatter.error("Couldn't find "+name+" on the leaderboard. Does he/she play Shell Shock Live at all?")).queue();
 
     }
 }
