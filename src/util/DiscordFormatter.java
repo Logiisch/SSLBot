@@ -71,7 +71,7 @@ public class DiscordFormatter {
         eb.addField("Current Rank", formatXp(le.getRank()), true);
         eb.addField("Current XP", formatXp(le.getXp()), true);
         String thumb = SteamConnector.getAvatar(le.getSteamID());
-        eb.setThumbnail(thumb);
+        if (thumb.length()>0) eb.setThumbnail(thumb);
         return eb.build();
     }
 
