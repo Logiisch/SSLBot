@@ -87,6 +87,21 @@ public class DiscordFormatter {
         return eb.build();
     }
 
+    public static String formatLeaderboardCodeBlock(List<LeaderboardEntry> list,String title) {
+        StringBuilder out = new StringBuilder("```diff\n").append("- ").append(title).append("\n");
+        for (LeaderboardEntry le:list) {
+            out.append("+").append(fillSpaces(formatXp(le.getRank()),12,false)).append(SteamConnector.getName(le.getSteamID())).append("\n");
+            out.append(fillSpaces(formatXp(le.getXp()),24,true)).append(" xp\n");
+        }
+        out.append("```");
+        return out.toString();
+    }
+
+    private static String fillSpaces(String st, int minlen, boolean infront) {
+        while (st.length()<minlen) st = (infront?" "+st:st+" ");
+        return st;
+    }
+
     public static String getURL(String steamid) {
         return "https://steamcommunity.com/profiles/"+steamid;
     }
