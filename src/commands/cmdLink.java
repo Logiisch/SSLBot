@@ -1,20 +1,28 @@
 package commands;
 
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import util.DiscordFormatter;
 import util.SteamConnector;
+import webserver.CodeHandler;
+
+import java.awt.*;
 
 public class cmdLink extends ListenerAdapter {
+    private static final String LOGIN_LINK = "https://sslbot.logii.de/";
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         SlashCommandInteraction sce = event.getInteraction();
         if (!sce.getName().equalsIgnoreCase("link")) return;
 
-        OptionMapping steamIDom = sce.getOption("steamid");
+        OptionMapping codeOM = sce.getOption("code");
 
         String teststeamid = SteamConnector.getSteamID(event.getUser().getId());
         if (teststeamid.length()>0) {
@@ -22,45 +30,61 @@ public class cmdLink extends ListenerAdapter {
             return;
         }
 
-        if(steamIDom==null) {
-            String out = "To link this discord account to your steam account, please follow these steps:\n"
-                    +"Put the following text (including brackets) into the description of your steam account and hit save:\n"
-                    +"`"+getVerifyCode(event.getUser().getId())+"`\n"
-                    +"Then look for your steam id. A guide for getting your steam id can be found here:\n"
-                    +"<https://www.thegamer.com/how-to-find-your-steam-id/>\n"
-                    +"If you have your steam id, come back to discord and use the /link command again, but this time, pass your steam id as argument\n"
-                    +"example: `/link 76561198315721049`";
-            sce.reply(out).setEphemeral(true).queue();
+        if(codeOM==null) {
+            sce.reply("Please log in through steam here to link your accounts").setEphemeral(true).addActionRow(
+                    Button.link(LOGIN_LINK,"Login")
+            ).queue();
             return;
         }
 
-        String steamid = steamIDom.getAsString().trim();
-        if (!SteamConnector.isValidSteamID(steamid)) {
-            sce.replyEmbeds(DiscordFormatter.error("Your steam ID should have exactly 17 digits. Please check the provided id!\nIf you need help, please run `/link`!")).setEphemeral(true).queue();
-            return;
-        }
-        String description;
-
+        String code = codeOM.getAsString();
+        String userid;
         try {
-            description = SteamConnector.getDescription(steamid);
+            userid = CodeHandler.getAndRemove(code);
         } catch (Exception e) {
-            event.replyEmbeds(DiscordFormatter.error("Your steam ID is not valid, or your profile is not set to public!\nYou can only link public profiles. After linking, you can switch back to private!")).setEphemeral(true).queue();
+            event.replyEmbeds(DiscordFormatter.error("This code isnt valid. Please check again. If you dont have a code yet, please use this link!")).setEphemeral(true).addActionRow(
+                    Button.link(LOGIN_LINK,"Login")
+            ).queue();
             return;
         }
+        String username = SteamConnector.getName(userid);
+        String link = DiscordFormatter.getURL(userid);
+        String avatar = SteamConnector.getAvatar(userid);
+        EmbedBuilder eb = new EmbedBuilder()
+                .setColor(Color.BLACK)
+                .setAuthor("ID: "+userid)
+                .setTitle(username,link)
+                .setThumbnail(avatar)
+                .setDescription("Do you want to link this account?");
 
-        if (!description.contains(getVerifyCode(event.getUser().getId()))) {
-            event.replyEmbeds(DiscordFormatter.error("Your account description doesnt seem to contain the code. Please use the exact code, with brackets:\n"
-                    +"`"+getVerifyCode(event.getUser().getId())+"`")).setEphemeral(true).queue();
-            return;
-        }
+        event.replyEmbeds(eb.build()).addActionRow(
+                Button.primary("link-yes-"+userid,"Yes"),
+                Button.danger("link-no","No")
+        ).setEphemeral(true).queue();
 
-        SteamConnector.addLinking(sce.getUser().getId(),steamid);
-        event.reply("Success: Your Accounts were successfully linked!\nYou may now remove the code from your description.").setEphemeral(true).queue();
 
     }
 
-
-    private static String getVerifyCode(String discordID) {
-        return "[LINK:"+discordID+"]";
+    @Override
+    public void onButtonInteraction(ButtonInteractionEvent event) {
+        String btnName = event.getButton().getId();
+        assert btnName!=null;
+        if (!btnName.startsWith("link")) return;
+        Message msg = event.getMessage();
+        if (btnName.equalsIgnoreCase("link-no")) {
+            EmbedBuilder eb = new EmbedBuilder(msg.getEmbeds().get(0)).setColor(Color.red).setDescription("Aborted!");
+            event.editMessageEmbeds(eb.build()).setActionRow(
+                    Button.primary("link-yes","Yes").asDisabled(),
+                    Button.danger("link-no","No").asDisabled()
+            ).queue();
+            return;
+        }
+        String userID = btnName.split("-")[2];
+        SteamConnector.addLinking(event.getUser().getId(),userID);
+        EmbedBuilder eb = new EmbedBuilder(msg.getEmbeds().get(0)).setColor(Color.green).setDescription("You successfully linked your Steam Account!");
+        event.editMessageEmbeds(eb.build()).setActionRow(
+                Button.primary("link-yes","Yes").asDisabled(),
+                Button.danger("link-no","No").asDisabled()
+        ).queue();
     }
 }

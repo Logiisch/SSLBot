@@ -1,0 +1,29 @@
+<component name="libraryTable">
+  <library name="OpenID">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Downloads/openid4java-1.0.0/lib/commons-codec-1.3.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/openid4java-1.0.0/lib/commons-logging-1.03.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/openid4java-1.0.0/lib/guice-2.0.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/openid4java-1.0.0/lib/httpclient-4.2.2.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/openid4java-1.0.0/lib/httpcore-4.2.2.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/openid4java-1.0.0/lib/nekohtml-1.9.14.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/openid4java-1.0.0/lib/xercesImpl-2.8.1.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/openid4java-1.0.0/openid4java-1.0.0.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/openid4java-1.0.0/lib/extra/maven-ant-tasks-2.1.3.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/openid4java-1.0.0/lib/extra/jdom-1.0.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/openid4java-1.0.0/lib/extra/jcip-annotations.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/openid4java-1.0.0/lib/extra/svnjavahl-1.0.0.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/openid4java-1.0.0/lib/extra/svnClientAdapter-1.0.0.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/openid4java-1.0.0/lib/extra/servlet-api-2.4.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/openid4java-1.0.0/lib/extra/svnant-1.0.0.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/openid4java-1.0.0/lib/optional/ehcache-1.2.4.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/openid4java-1.0.0/lib/optional/spring-2.0-beans.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/openid4java-1.0.0/lib/optional/spring-2.0-jdbc.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/openid4java-1.0.0/lib/optional/spring-2.0-core.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/openid4java-1.0.0/lib/optional/log4j-1.2.8.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/openid4java-1.0.0/lib/optional/spring-2.0-dao.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

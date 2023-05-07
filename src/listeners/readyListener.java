@@ -35,7 +35,7 @@ public class readyListener extends ListenerAdapter {
                 .queue();
         guild
                 .upsertCommand("link","Link your discord account to your Steam Account")
-                .addOption(OptionType.STRING,"steamid","your Steam ID",false)
+                .addOption(OptionType.STRING,"code","the code from the website",false)
                 .queue();
         guild
                 .upsertCommand("unlink","Unlink your Steam and Discord Account")

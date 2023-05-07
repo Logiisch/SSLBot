@@ -7,6 +7,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="JDA-5.0.0-beta.8-withDependencies" level="project" />
+    <orderEntry type="library" name="JDA" level="project" />
+    <orderEntry type="library" name="sparkjava.spark.core" level="project" />
+    <orderEntry type="library" name="OpenID" level="project" />
   </component>
 </module>

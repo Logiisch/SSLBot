@@ -66,7 +66,7 @@ public class DiscordFormatter {
 
     public static MessageEmbed formatLeaderboardEntry(LeaderboardEntry le, Color color) {
         String name = SteamConnector.getName(le.getSteamID());
-        EmbedBuilder eb = new EmbedBuilder().setTitle(name, "https://steamcommunity.com/profiles/" + le.getSteamID());
+        EmbedBuilder eb = new EmbedBuilder().setTitle(name, getURL(le.getSteamID()));
         eb.setColor(color);
         eb.addField("Current Rank", formatXp(le.getRank()), true);
         eb.addField("Current XP", formatXp(le.getXp()), true);
@@ -85,5 +85,9 @@ public class DiscordFormatter {
                 .setDescription(message);
         if (useFooter) eb.setFooter("If you think this should work, please create an issue on Github. Use \"/github\".");
         return eb.build();
+    }
+
+    public static String getURL(String steamid) {
+        return "https://steamcommunity.com/profiles/"+steamid;
     }
 }

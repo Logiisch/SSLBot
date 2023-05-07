@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import util.STATIC;
+import webserver.WebThread;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +31,7 @@ public class Main {
 
         try {
             builder.build();
+            startThreads();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,6 +52,11 @@ public class Main {
         builder.addEventListeners(new cmdServerLb());
         builder.addEventListeners(new cmdSurrounding());
 
+    }
+
+    private static void startThreads() {
+        Thread webserver = new Thread(new WebThread());
+        webserver.start();
     }
 
 
