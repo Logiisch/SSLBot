@@ -64,9 +64,9 @@ public class WebThread implements Runnable{
 
             return "<body style=\"background-image: url('" + BG_LINK + "'); color:white\">" +
                     "<h1 style=\"text-align:center\">Welcome " + username + "!</h1>" +
-                    "To complete the linking of your accounts, please go back to discord and use the command:\n" +
+                    "To complete the linking of your accounts, please go back to discord and use the command:" +
                     "<h2><b>/link " + code + "<b></h2>" +
-                    "Don't share this code!\n" +
+                    "Don't share this code!<br>" +
                     "Not your account? <a href=\"/\">Try again!</a>" +
                     "</body>";
 
