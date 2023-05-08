@@ -1,11 +1,13 @@
 package listeners;
 
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import org.jetbrains.annotations.NotNull;
+import util.DiscordFormatter;
 import util.STATIC;
 import util.SteamConnector;
 
@@ -16,9 +18,14 @@ public class readyListener extends ListenerAdapter {
         //registerLocalCommands(event.getJDA());
         //registerGlobalCommands(event.getJDA());
         SteamConnector.loadLinks();
+        DiscordFormatter.loadDisplayStyles();
     }
 
     private static void registerGlobalCommands(JDA jda) {
+        jda.upsertCommand("displaystyle","Choose in what style the leaderboard should be shown")
+                .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
+                .setGuildOnly(true)
+                .queue();
 
     }
 
@@ -28,7 +35,13 @@ public class readyListener extends ListenerAdapter {
             System.out.println("Fehler beim Registieren der Commands: Guild == null");
             return;
         }
-        guild
+
+        guild.upsertCommand("displaystyle","Choose in what style the leaderboard should be shown")
+                .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
+                .setGuildOnly(true)
+                .queue();
+
+       /* guild
                 .upsertCommand("top","Show the top players in the leaderboard")
                 .addOption(OptionType.INTEGER,"page","page nbr. you want to see",false)
                 .queue();
@@ -57,6 +70,6 @@ public class readyListener extends ListenerAdapter {
                 .queue();
         guild
                 .upsertCommand("surrounding","Show what players are directly in front or behind you on the leaderboard")
-                .queue();
+                .queue();*/
     }
 }

@@ -51,6 +51,7 @@ public class Main {
         builder.addEventListeners(new cmdRank());
         builder.addEventListeners(new cmdServerLb());
         builder.addEventListeners(new cmdSurrounding());
+        builder.addEventListeners(new cmdDisplaystyle());
 
     }
 

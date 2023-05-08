@@ -62,19 +62,34 @@ public class cmdServerLb extends ListenerAdapter {
         }
         entries = sortLeaderboard(entries);
         if (entries.size()<11) {
-            String msgID = event.getHook().sendMessage(DiscordFormatter.formatLeaderboardCodeBlock(entries,"SSL Server Leaderboard")).addActionRow(
+
+            String msgID = DiscordFormatter.sendLeaderboardAuto(entries,event.getHook(),event.getGuild(),"SSL Server Leaderboard").setActionRow(
                     Button.secondary("serverlb-reload",Emoji.fromUnicode("U+1F504")),
-                    Button.secondary("serverlb-close",Emoji.fromUnicode("U+274C"))).complete().getId();
+                    Button.secondary("serverlb-close",Emoji.fromUnicode("U+274C"))
+            ).complete().getId();
+
+
+            /*String msgID = event.getHook().sendMessage(DiscordFormatter.formatLeaderboardCodeBlock(entries,"SSL Server Leaderboard")).addActionRow(
+                    Button.secondary("serverlb-reload",Emoji.fromUnicode("U+1F504")),
+                    Button.secondary("serverlb-close",Emoji.fromUnicode("U+274C"))).complete().getId();*/
             InteractionManager.addMessage(msgID,event.getUser().getId());
             return;
         }
         List<LeaderboardEntry> sublist = entries.subList(0,10);
-        String msgID = event.getHook().sendMessage(DiscordFormatter.formatLeaderboardCodeBlock(sublist,"SSL Server Leaderboard Page 1")).addActionRow(
+
+        String msgID = DiscordFormatter.sendLeaderboardAuto(sublist,event.getHook(),event.getGuild(),"SSL Leaderboard Page 1").setActionRow(
                 Button.primary("serverlb-p0", Emoji.fromUnicode("U+2B05")).asDisabled(),
                 Button.primary("serverlb-p2", Emoji.fromUnicode("U+27A1")),
                 Button.secondary("serverlb-reload",Emoji.fromUnicode("U+1F504")),
                 Button.secondary("serverlb-close",Emoji.fromUnicode("U+274C"))
         ).complete().getId();
+
+       /* String msgID = event.getHook().sendMessage(DiscordFormatter.formatLeaderboardCodeBlock(sublist,"SSL Server Leaderboard Page 1")).addActionRow(
+                Button.primary("serverlb-p0", Emoji.fromUnicode("U+2B05")).asDisabled(),
+                Button.primary("serverlb-p2", Emoji.fromUnicode("U+27A1")),
+                Button.secondary("serverlb-reload",Emoji.fromUnicode("U+1F504")),
+                Button.secondary("serverlb-close",Emoji.fromUnicode("U+274C"))
+        ).complete().getId();*/
         sentMessages.put(msgID,entries);
         InteractionManager.addMessage(msgID,event.getUser().getId());
 
@@ -158,18 +173,31 @@ public class cmdServerLb extends ListenerAdapter {
             }
             entries = sortLeaderboard(entries);
             if (entries.size()<11) {
-                event.getMessage().editMessage(DiscordFormatter.formatLeaderboardCodeBlock(entries,"SSL Server Leaderboard")).setActionRow(
+
+                DiscordFormatter.editLeaderboardAuto(entries,event.getHook(),event.getGuild(),"SSL Server Leaderboard").setActionRow(
                         Button.secondary("serverlb-reload",Emoji.fromUnicode("U+1F504")),
-                        Button.secondary("serverlb-close",Emoji.fromUnicode("U+274C"))).queue();
+                        Button.secondary("serverlb-close",Emoji.fromUnicode("U+274C"))
+                ).queue();
+
+
+               /* event.getMessage().editMessage(DiscordFormatter.formatLeaderboardCodeBlock(entries,"SSL Server Leaderboard")).setActionRow(
+                        Button.secondary("serverlb-reload",Emoji.fromUnicode("U+1F504")),
+                        Button.secondary("serverlb-close",Emoji.fromUnicode("U+274C"))).queue();*/
                 return;
             }
             List<LeaderboardEntry> sublist = entries.subList(0,10);
-            event.getMessage().editMessage(DiscordFormatter.formatLeaderboardCodeBlock(sublist,"SSL Server Leaderboard Page 1")).setActionRow(
+            DiscordFormatter.editLeaderboardAuto(sublist,event.getHook(),event.getGuild(),"SSL Server Leaderboard Page 1").setActionRow(
                     Button.primary("serverlb-p0", Emoji.fromUnicode("U+2B05")).asDisabled(),
                     Button.primary("serverlb-p2", Emoji.fromUnicode("U+27A1")),
                     Button.secondary("serverlb-reload",Emoji.fromUnicode("U+1F504")),
                     Button.secondary("serverlb-close",Emoji.fromUnicode("U+274C"))
             ).queue();
+            /*event.getMessage().editMessage(DiscordFormatter.formatLeaderboardCodeBlock(sublist,"SSL Server Leaderboard Page 1")).setActionRow(
+                    Button.primary("serverlb-p0", Emoji.fromUnicode("U+2B05")).asDisabled(),
+                    Button.primary("serverlb-p2", Emoji.fromUnicode("U+27A1")),
+                    Button.secondary("serverlb-reload",Emoji.fromUnicode("U+1F504")),
+                    Button.secondary("serverlb-close",Emoji.fromUnicode("U+274C"))
+            ).queue();*/
             sentMessages.put(event.getMessage().getId(),entries);
             return;
         }
@@ -184,12 +212,18 @@ public class cmdServerLb extends ListenerAdapter {
             Button left = Button.primary("serverlb-p"+(pagenum-1), Emoji.fromUnicode("U+2B05"));
             Button right = Button.primary("serverlb-p"+(pagenum+1), Emoji.fromUnicode("U+27A1"));
             int lastSite = Math.floorDiv(les.size(),10)+(les.size()%10==0?0:1);
-            event.getMessage().editMessage(DiscordFormatter.formatLeaderboardCodeBlock(sublist,"SSL Server Leaderboard Page "+pagenum)).setActionRow(
+            DiscordFormatter.editLeaderboardAuto(sublist,event.getHook(),event.getGuild(),"SSL Server Leaderboard Page "+pagenum).setActionRow(
                     (pagenum==1?left.asDisabled():left.asEnabled()),
                     (pagenum==lastSite?right.asDisabled():right.asEnabled()),
                     Button.secondary("serverlb-reload",Emoji.fromUnicode("U+1F504")),
                     Button.secondary("serverlb-close",Emoji.fromUnicode("U+274C"))
             ).queue();
+            /*event.getMessage().editMessage(DiscordFormatter.formatLeaderboardCodeBlock(sublist,"SSL Server Leaderboard Page "+pagenum)).setActionRow(
+                    (pagenum==1?left.asDisabled():left.asEnabled()),
+                    (pagenum==lastSite?right.asDisabled():right.asEnabled()),
+                    Button.secondary("serverlb-reload",Emoji.fromUnicode("U+1F504")),
+                    Button.secondary("serverlb-close",Emoji.fromUnicode("U+274C"))
+            ).queue();*/
 
         }
     }

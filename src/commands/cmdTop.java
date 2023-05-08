@@ -55,9 +55,13 @@ public class cmdTop extends ListenerAdapter {
 
         Button left = Button.primary("top-p"+(page-1), Emoji.fromUnicode("U+2B05"));
 
-        event.getHook().sendMessage(DiscordFormatter.formatLeaderboardCodeBlock(lb,"ShellShock Live XP Leaderboard")).addActionRow(
+        DiscordFormatter.sendLeaderboardAuto(lb,event.getHook(),event.getGuild(),"ShellShock Live XP Leaderboard Page 1").setActionRow(
                 (page==1?left.asDisabled():left),Button.primary("top-p"+(page+1), Emoji.fromUnicode("U+27A1")),Button.secondary("top-close",Emoji.fromUnicode("U+274C"))
         ).queue();
+
+       /* event.getHook().sendMessage(DiscordFormatter.formatLeaderboardCodeBlock(lb,"ShellShock Live XP Leaderboard")).addActionRow(
+                (page==1?left.asDisabled():left),Button.primary("top-p"+(page+1), Emoji.fromUnicode("U+27A1")),Button.secondary("top-close",Emoji.fromUnicode("U+274C"))
+        ).queue();*/
 
 
         /*event.getHook().sendMessageEmbeds(page==1? DiscordFormatter.formatLeaderboardEmbeds(lb,true):DiscordFormatter.formatLeaderboardEmbeds(lb)).addActionRow(
@@ -108,9 +112,12 @@ public class cmdTop extends ListenerAdapter {
 
         Button left = Button.primary("top-p"+(page-1), Emoji.fromUnicode("U+2B05"));
 
-        event.getMessage().editMessage(DiscordFormatter.formatLeaderboardCodeBlock(lb,"ShellShockLive XP Leaderboard")).setActionRow(
+        DiscordFormatter.editLeaderboardAuto(lb,event.getHook(),event.getGuild(),"ShellShock Live Xp Leaderboard Page "+page).setActionRow(
                 (page==1?left.asDisabled():left),Button.primary("top-p"+(page+1), Emoji.fromUnicode("U+27A1")),Button.secondary("top-close",Emoji.fromUnicode("U+274C"))
         ).queue();
+        /*event.getMessage().editMessage(DiscordFormatter.formatLeaderboardCodeBlock(lb,"ShellShockLive XP Leaderboard")).setActionRow(
+                (page==1?left.asDisabled():left),Button.primary("top-p"+(page+1), Emoji.fromUnicode("U+27A1")),Button.secondary("top-close",Emoji.fromUnicode("U+274C"))
+        ).queue();*/
 
         /*event.getMessage().editMessageEmbeds(page==1?DiscordFormatter.formatLeaderboardEmbeds(lb,true):DiscordFormatter.formatLeaderboardEmbeds(lb)).setActionRow(
                 (page==1?left.asDisabled():left),Button.primary("top-p"+(page+1), Emoji.fromUnicode("U+27A1")),Button.secondary("top-close",Emoji.fromUnicode("U+274C"))
