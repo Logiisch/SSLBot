@@ -12,9 +12,11 @@ import util.STATIC;
 import util.SteamConnector;
 
 public class readyListener extends ListenerAdapter {
+    public static JDA jda = null;
 
     @Override
     public void onReady(@NotNull ReadyEvent event) {
+        jda = event.getJDA();
         //registerLocalCommands(event.getJDA());
         //registerGlobalCommands(event.getJDA());
         SteamConnector.loadLinks();

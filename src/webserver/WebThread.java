@@ -1,5 +1,6 @@
 package webserver;
 
+import commands.cmdLink;
 import spark.Request;
 import util.SteamConnector;
 
@@ -22,7 +23,14 @@ public class WebThread implements Runnable{
 
     @Override
     public void run() {
-        get("/",(request,response)-> {
+        get("/login",(request,response)-> {
+
+            Map<String, String[]> args = request.queryMap().toMap();
+
+            if (args.containsKey("loginid")) {
+                request.session(true).attribute("loginid",args.get("loginid")[0]);
+            }
+
             response.redirect(openid.login(getFullUrl(request, "/auth")));
             // We should never return here.
             // The OpenID login provider should take us somewhere else!
@@ -45,6 +53,14 @@ public class WebThread implements Runnable{
                 }
                 /*request.session(true).attribute("steamid", user);
                 response.redirect(fullUrl);*/
+            String loginid = request.session(true).attribute("loginid");
+            request.session(true).removeAttribute(loginid);
+
+            if(loginid != null) {
+                String discordid = cmdLink.getUserID(loginid);
+                if (discordid.length()>0) cmdLink.linkUser(userID,discordid);
+            }
+
             String code = CodeHandler.addCode(userID);
             String link = SteamOpenID.removePort(getFullUrl(request,"/success?code="+code+"&userid="+userID));
             response.redirect(link);
@@ -64,10 +80,11 @@ public class WebThread implements Runnable{
 
             return "<body style=\"background-image: url('" + BG_LINK + "'); color:white\">" +
                     "<h1 style=\"text-align:center\">Welcome " + username + "!</h1>" +
-                    "To complete the linking of your accounts, please go back to discord and use the command:" +
+                    "You should have received a Discord DM. Please check your inbox.<br>" +
+                    "If not, please go back to Discord and use the command:" +
                     "<h2><b>/link " + code + "<b></h2>" +
                     "Don't share this code!<br>" +
-                    "Not your account? <a href=\"/\">Try again!</a>" +
+                    "Not your account? <a href=\"/login\">Try again!</a>" +
                     "</body>";
 
         });
@@ -75,7 +92,7 @@ public class WebThread implements Runnable{
         get("/error", (request, response) -> "<body style=\"background-image: url('" + BG_LINK + "'); color:white\">" +
                 "<p style=\"text-align:center\">" +
                 "<h1 style=\"color:red\">Error</h1>" +
-                "<h2>Couldn't link your account! Please <a href=\"/\">try again!</a></h2>" +
+                "<h2>Couldn't link your account! Please <a href=\"/login\">try again!</a></h2>" +
                 "</p>" +
                 "</body>");
     }
