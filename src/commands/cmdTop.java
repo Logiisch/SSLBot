@@ -55,7 +55,7 @@ public class cmdTop extends ListenerAdapter {
 
         Button left = Button.primary("top-p"+(page-1), Emoji.fromUnicode("U+2B05"));
 
-        DiscordFormatter.sendLeaderboardAuto(lb,event.getHook(),event.getGuild(),"ShellShock Live XP Leaderboard Page 1").setActionRow(
+        DiscordFormatter.sendLeaderboardAuto(lb,event.getHook(),event.getGuild(),"ShellShock Live XP Leaderboard Page "+page).setActionRow(
                 (page==1?left.asDisabled():left),Button.primary("top-p"+(page+1), Emoji.fromUnicode("U+27A1")),Button.secondary("top-close",Emoji.fromUnicode("U+274C"))
         ).queue();
 
