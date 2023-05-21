@@ -203,7 +203,11 @@ public class cmdServerLb extends ListenerAdapter {
         }
         if (btnName.startsWith("serverlb-p")) {
             int pagenum = Integer.parseInt(btnName.replace("serverlb-p",""));
-            List<LeaderboardEntry> les = sentMessages.get(event.getMessage().getId());
+            List<LeaderboardEntry> les = sentMessages.get(event.getMessage().getId()); //TODO Fix NullPointerException
+            if (les == null) {
+                event.getHook().editOriginalEmbeds(DiscordFormatter.error("Something went wrong. Please try again!")).queue();
+                return;
+            }
             int lowerBound = 10*(pagenum-1);
             int upperBound = Math.min(lowerBound+10,les.size());
             //System.out.println("Calling Page "+pagenum+" with Ub="+upperBound+" Lb="+lowerBound+" and lessize="+les.size());
