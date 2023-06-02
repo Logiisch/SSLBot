@@ -57,6 +57,7 @@ public class cmdRank extends ListenerAdapter {
             event.replyEmbeds(DiscordFormatter.error("Something went wrong. Please check the console!")).setEphemeral(true).queue();
             return;
         }
+        event.deferReply().queue();
         String name = SteamConnector.getName(steamID);
         for (LeaderboardEntry le:ls) {
             if (le.getSteamID().equalsIgnoreCase(steamID)) {
@@ -74,11 +75,11 @@ public class cmdRank extends ListenerAdapter {
                 if (!avatar.equalsIgnoreCase("")) {
                     eb.setThumbnail(avatar);
                 }
-                event.replyEmbeds(eb.build()).queue();
+                event.getHook().sendMessageEmbeds(eb.build()).queue();
                 return;
             }
         }
-        event.replyEmbeds(DiscordFormatter.error("Couldn't find "+name+" on the leaderboard. Does he/she play Shell Shock Live at all?")).queue();
+        event.getHook().sendMessageEmbeds(DiscordFormatter.error("Couldn't find "+name+" on the leaderboard. Does he/she play Shell Shock Live at all?")).queue();
 
     }
 }

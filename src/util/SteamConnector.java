@@ -120,25 +120,43 @@ public class SteamConnector {
             throw new Exception("Profile is probably private!");
         }
         String avatar = lstAvatar.item(0).getTextContent();
-        NodeList lstMPG = doc.getElementsByTagName("mostPlayedGame");
-        int hoursSSL = -1;
-        for (int i=0;i<lstMPG.getLength();i++) {
-            Node mpg = lstMPG.item(i);
+        int hoursSSL = getPlayingTime(steamid);
+
+        return new SteamProfile(username,avatar,hoursSSL);
+    }
+
+    private static int getPlayingTime(String steamid) throws Exception{
+        String url = "https://steamcommunity.com/profiles/%STEAMID%/games/?xml=1".replace("%STEAMID%",steamid);
+        Document doc;
+        doc = parseUrl(url);
+
+        NodeList games = doc.getElementsByTagName("game");
+
+        for (int i=0;i<games.getLength();i++) {
+            Node mpg = games.item(i);
             NodeList childs = mpg.getChildNodes();
             boolean isSSL = false;
             for (int j=0;j<childs.getLength();j++) {
                 Node child = childs.item(j);
-                if (child.getTextContent().equalsIgnoreCase("ShellShock Live")) isSSL = true;
+                if (child.getTextContent().equalsIgnoreCase("326460")) isSSL = true;
             }
             if (isSSL) {
                 for (int j=0;j<childs.getLength();j++) {
                     Node child = childs.item(j);
-                    if (child.getNodeName().equalsIgnoreCase("hoursOnRecord")) hoursSSL = Integer.parseInt(child.getTextContent().strip().replaceAll(",",""));
+                    if (child.getNodeName().equalsIgnoreCase("hoursOnRecord")) {
+
+                        String value = child.getTextContent().strip().replaceAll(",","");
+                        if (value.contains(".")) return Math.round(Float.parseFloat(value));
+
+                        return Integer.parseInt(child.getTextContent().strip().replaceAll(",",""));
+                    }
                 }
             }
         }
-        return new SteamProfile(username,avatar,hoursSSL);
+        return -1;
     }
+
+
     public static String getDescription(String steamid) throws Exception {
         String url = "https://steamcommunity.com/profiles/%STEAMID%/?xml=1".replace("%STEAMID%",steamid);
         Document doc;
